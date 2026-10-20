@@ -1,0 +1,1275 @@
+<!DOCTYPE html>
+<!-- 観覧帖 build: 2026-10-21 公開版 -->
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>観覧帖|展示イベント検索(北関東)</title>
+<meta name="description" content="茨城・栃木・群馬・埼玉など北関東を中心に、美術館・博物館・アートイベントを地域・ジャンル・開催期間でさがし、お気に入りに保存して来館計画まで立てられる展示イベント検索サービス。公式サイトで確認した実データと、サンプルデータを区別して表示します。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@500;600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F4F3EE;
+  --card:#FFFFFF;
+  --ink:#26241E;
+  --ink-soft:#6F6A5E;
+  --line:#E2DFD5;
+  --indigo:#2F4C7E;
+  --indigo-soft:#EAEFF7;
+  --shu:#B5432E;
+  --shu-soft:#F7E9E4;
+  --gray:#9A958A;
+  --font-display:'Shippori Mincho B1','Hiragino Mincho ProN','Yu Mincho',serif;
+  --font-body:'Zen Kaku Gothic New','Hiragino Kaku Gothic ProN','Yu Gothic',sans-serif;
+  --font-mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--font-body);
+  background:var(--paper);
+  color:var(--ink);
+  font-size:14px;
+  line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+}
+body.locked{overflow:hidden}
+::selection{background:var(--indigo-soft)}
+img,svg{display:block}
+button{font-family:inherit;cursor:pointer}
+a,button,input,select,label{touch-action:manipulation}
+input,select{font-family:inherit;color:var(--ink)}
+:focus-visible{outline:2px solid var(--indigo);outline-offset:2px;border-radius:4px}
+.wrap{max-width:1120px;margin:0 auto;padding-inline:clamp(16px,4vw,32px)}
+
+/* ---------- header ---------- */
+.site-head{border-bottom:1px solid var(--line);background:var(--paper)}
+.site-head .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding-block:16px 14px}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:inherit}
+.brand-seal{
+  width:34px;height:34px;border-radius:7px;background:var(--shu);color:#fff;
+  font-family:var(--font-display);font-weight:600;font-size:19px;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 2px 6px rgba(181,67,46,.25);
+}
+.brand-name{font-family:var(--font-display);font-weight:600;font-size:20px;letter-spacing:.06em;line-height:1.2}
+.brand-sub{display:block;font-size:10.5px;letter-spacing:.14em;color:var(--ink-soft)}
+.tabs{display:flex;gap:8px}
+.tab{
+  border:1px solid var(--line);background:var(--card);color:var(--ink-soft);
+  border-radius:999px;padding:8px 16px;font-size:13px;font-weight:500;
+  display:flex;align-items:center;gap:8px;transition:border-color .2s,color .2s,background .2s;
+}
+.tab:hover{border-color:var(--ink-soft);color:var(--ink)}
+.tab.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.tab .cnt{
+  min-width:20px;height:20px;padding:0 5px;border-radius:999px;
+  display:inline-flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:700;font-family:var(--font-mono);
+  background:transparent;border:1px solid var(--line);color:var(--ink-soft);
+}
+.tab.on .cnt{border-color:rgba(255,255,255,.4);color:#fff}
+.tab .cnt.has{background:var(--shu);border-color:var(--shu);color:#fff}
+
+/* ---------- hero ---------- */
+.hero{padding-block:clamp(36px,6vw,64px) clamp(24px,4vw,40px)}
+.eyebrow{
+  font-family:var(--font-mono);font-size:11px;letter-spacing:.22em;
+  color:var(--ink-soft);margin-bottom:14px;
+}
+.hero h1{
+  font-family:var(--font-display);font-weight:600;
+  font-size:clamp(30px,5vw,44px);line-height:1.35;letter-spacing:.04em;
+}
+.lead{margin-top:14px;max-width:560px;color:var(--ink-soft);font-size:14px}
+.hero-count{margin-top:22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;font-size:13.5px;color:var(--ink-soft)}
+.hero-count strong{
+  font-family:var(--font-display);font-weight:700;font-size:24px;color:var(--indigo);
+  margin:0 2px;font-feature-settings:'pnum';
+}
+.sample-chip{
+  display:inline-flex;align-items:center;gap:7px;
+  border:1px solid var(--line);background:var(--card);border-radius:999px;
+  padding:4px 12px;font-size:11px;color:var(--ink-soft);
+}
+.sample-chip::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--gray)}
+
+/* ---------- toolbar ---------- */
+.toolbar{
+  border-block:1px solid var(--line);
+  background:rgba(244,243,238,.94);
+  backdrop-filter:blur(8px);
+  -webkit-backdrop-filter:blur(8px);
+  padding-block:16px;
+}
+@media (min-width:1024px){
+  .toolbar{position:sticky;top:0;z-index:40;border-top:0}
+}
+.tb-row1{display:flex;gap:14px;align-items:flex-end;flex-wrap:wrap}
+.tb-row2{display:flex;gap:14px;align-items:flex-end;flex-wrap:wrap;margin-top:12px}
+.search{flex:1 1 280px;position:relative}
+.search-icon{
+  position:absolute;left:13px;top:50%;transform:translateY(-50%);
+  color:var(--ink-soft);pointer-events:none;
+}
+#q{
+  width:100%;border:1px solid var(--line);background:var(--card);
+  border-radius:9px;padding:10px 36px 10px 40px;font-size:13.5px;
+}
+#q::-webkit-search-cancel-button,#q::-webkit-search-decoration{-webkit-appearance:none;display:none}
+#q::placeholder{color:var(--gray)}
+#q:focus{border-color:var(--indigo);outline:none}
+.q-clear{
+  position:absolute;right:8px;top:50%;transform:translateY(-50%);
+  width:24px;height:24px;border:0;border-radius:50%;
+  background:transparent;color:var(--ink-soft);font-size:16px;line-height:1;
+  display:flex;align-items:center;justify-content:center;
+}
+.q-clear:hover{background:var(--line);color:var(--ink)}
+.q-clear[hidden],.date-clear[hidden]{display:none}
+.field{display:flex;flex-direction:column;min-width:132px}
+.field>span{
+  font-size:10.5px;letter-spacing:.1em;color:var(--ink-soft);margin-bottom:5px;font-weight:500;
+}
+select{
+  appearance:none;-webkit-appearance:none;
+  border:1px solid var(--line);background:var(--card);
+  border-radius:9px;padding:9px 34px 9px 12px;font-size:13px;min-height:41px;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%236F6A5E' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 12px center;
+}
+select:focus{border-color:var(--indigo);outline:none}
+select:disabled{opacity:.4;cursor:not-allowed}
+.date-wrap{position:relative;min-width:150px}
+#date{
+  width:100%;border:1px solid var(--line);background:var(--card);
+  border-radius:9px;padding:9px 30px 9px 12px;font-size:13px;min-height:41px;
+  font-family:var(--font-mono);color:var(--ink);
+}
+#date:focus{border-color:var(--indigo);outline:none}
+#date::-webkit-calendar-picker-indicator{
+  opacity:0;position:absolute;right:6px;width:24px;height:24px;cursor:pointer;
+}
+.date-clear{
+  position:absolute;right:8px;top:50%;transform:translateY(-50%);
+  width:20px;height:20px;border:0;border-radius:50%;background:transparent;
+  color:var(--ink-soft);font-size:14px;line-height:1;
+  display:flex;align-items:center;justify-content:center;
+}
+.date-clear:hover{background:var(--line);color:var(--ink)}
+.chips{display:flex;gap:8px;overflow-x:auto;flex:1 1 auto;padding-bottom:2px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{
+  flex:0 0 auto;border:1px solid var(--line);background:var(--card);
+  border-radius:999px;padding:7px 15px;font-size:12.5px;color:var(--ink-soft);
+  transition:background .2s,color .2s,border-color .2s;white-space:nowrap;
+}
+.chip:hover{border-color:var(--ink-soft);color:var(--ink)}
+.chip.on{background:var(--indigo);border-color:var(--indigo);color:#fff}
+.field.sort{margin-left:auto}
+
+/* ---------- meta row ---------- */
+.meta-row{
+  display:flex;align-items:baseline;justify-content:space-between;gap:12px;
+  margin-block:24px 12px;flex-wrap:wrap;
+}
+#resultCount{font-size:13px;color:var(--ink-soft)}
+.meta-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.hide-sample{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;color:var(--ink-soft);cursor:pointer;white-space:nowrap}
+.hide-sample input{accent-color:var(--indigo);width:15px;height:15px;cursor:pointer}
+.filter-toggle{
+  border:1px solid var(--line);background:var(--card);color:var(--ink-soft);
+  border-radius:999px;padding:6px 14px;font-size:12.5px;
+  display:inline-flex;align-items:center;gap:6px;transition:all .2s;
+}
+.filter-toggle:hover{border-color:var(--ink-soft);color:var(--ink)}
+.filter-toggle.on{background:var(--shu);border-color:var(--shu);color:#fff}
+.filter-toggle::before{content:'';width:6px;height:6px;border-radius:50%;background:currentColor}
+#reset{
+  border:0;background:none;color:var(--indigo);font-size:13px;
+  text-decoration:underline;text-underline-offset:3px;padding:4px;
+}
+#reset:hover{color:var(--ink)}
+#reset[hidden]{display:none}
+.legend{display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin-block:0 16px;font-size:11.5px;color:var(--ink-soft)}
+.legend span{display:inline-flex;align-items:center;gap:5px}
+.legend i{width:7px;height:7px;border-radius:50%;font-style:normal}
+.legend .lg-running i{background:var(--indigo)}
+.legend .lg-closing i{background:var(--shu)}
+.legend .lg-upcoming i{background:var(--ink-soft)}
+.legend .lg-ended i{background:var(--gray)}
+
+/* ---------- grid & card ---------- */
+.grid{display:grid;gap:22px;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));padding-bottom:10px}
+.card{
+  background:var(--card);border:1px solid var(--line);border-radius:10px;
+  overflow:hidden;display:flex;flex-direction:column;cursor:pointer;
+  transition:transform .25s ease,box-shadow .25s ease;
+  animation:rise .5s ease both;
+}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.card:hover{transform:translateY(-3px);box-shadow:0 12px 26px rgba(38,36,30,.09)}
+.card.ended{opacity:.72}
+.card.ended .thumb>svg{filter:grayscale(.9)}
+.card.ended:hover{opacity:1}
+.thumb{position:relative;padding:10px;background:var(--card);border-bottom:1px solid var(--line)}
+.thumb>svg{width:100%;height:auto;aspect-ratio:4/3;border-radius:3px}
+.status{
+  position:absolute;top:18px;left:18px;
+  display:inline-flex;align-items:center;gap:6px;
+  background:rgba(255,255,255,.93);border:1px solid var(--line);border-radius:999px;
+  padding:3px 10px;font-size:11px;font-weight:700;letter-spacing:.06em;
+}
+.status::before{content:'';width:6px;height:6px;border-radius:50%;background:currentColor}
+.st-running{color:var(--indigo)}
+.st-closing{color:var(--shu)}
+.st-upcoming{color:var(--ink-soft)}
+.st-ended{color:var(--gray)}
+.sample-mark{
+  position:absolute;right:16px;bottom:16px;
+  border:1px solid rgba(38,36,30,.35);border-radius:999px;
+  background:rgba(255,255,255,.85);color:var(--ink-soft);
+  font-family:var(--font-mono);font-size:9px;letter-spacing:.18em;
+  padding:2px 8px;
+}
+.seal{
+  position:absolute;top:16px;right:12px;width:42px;height:42px;border-radius:50%;
+  border:1.5px solid rgba(38,36,30,.32);background:rgba(255,255,255,.88);
+  color:var(--ink-soft);font-family:var(--font-display);font-weight:600;font-size:17px;
+  display:flex;align-items:center;justify-content:center;
+  transition:transform .2s,border-color .2s,color .2s,background .2s;
+}
+.seal:hover{transform:scale(1.08);border-color:var(--ink);color:var(--ink)}
+.seal.on{
+  background:var(--shu);border-color:var(--shu);color:#fff;
+  transform:rotate(-8deg);box-shadow:0 3px 8px rgba(181,67,46,.3);
+  animation:stamp .38s cubic-bezier(.2,.8,.3,1);
+}
+@keyframes stamp{
+  0%{transform:scale(1.3) rotate(6deg)}
+  55%{transform:scale(.9) rotate(-11deg)}
+  100%{transform:scale(1) rotate(-8deg)}
+}
+.label{padding:16px 18px 18px;display:flex;flex-direction:column;flex:1}
+.venue-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.venue-row .venue{flex:1 1 auto;font-size:12px;color:var(--ink-soft);letter-spacing:.02em}
+.ds-chip{
+  flex:0 0 auto;display:inline-flex;align-items:center;gap:4px;
+  border:1px solid var(--line);border-radius:999px;padding:2px 9px;
+  font-size:10px;font-weight:500;letter-spacing:.05em;color:var(--gray);background:var(--card);
+}
+.ds-chip.ok{border-color:var(--indigo);color:var(--indigo);background:var(--indigo-soft)}
+.ds-chip.stale{border-style:dashed;border-color:rgba(181,67,46,.5);color:var(--shu);background:var(--shu-soft)}
+.ds-chip .tick{font-family:var(--font-mono)}
+.name{
+  font-family:var(--font-display);font-weight:600;font-size:19px;line-height:1.45;
+  letter-spacing:.02em;margin-top:5px;
+}
+.name-btn{
+  background:none;border:0;padding:0;margin:0;width:100%;text-align:left;color:inherit;
+  cursor:pointer;font-family:var(--font-display);font-weight:600;font-size:19px;
+  line-height:1.45;letter-spacing:.02em;
+}
+.name-btn:hover{text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:1px}
+.blurb{
+  font-size:12.5px;color:var(--ink-soft);margin-top:7px;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+}
+.rows{margin-top:14px;padding-top:12px;border-top:1px solid var(--line);display:grid;gap:7px}
+.row{display:flex;gap:10px;align-items:baseline}
+.rl{flex:0 0 38px;font-size:11px;color:var(--gray);letter-spacing:.08em}
+.rv{font-family:var(--font-mono);font-size:13px;letter-spacing:.01em}
+.rv-text{font-family:var(--font-body)}
+.days{font-family:var(--font-body);font-style:normal;font-size:11px;color:var(--ink-soft);margin-left:8px}
+.days.closing{color:var(--shu);font-weight:700}
+.note{display:block;font-family:var(--font-body);font-style:normal;font-size:11px;color:var(--gray);margin-top:1px}
+.unknown{color:var(--gray)}
+.label-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:12px}
+.tag{
+  background:var(--indigo-soft);color:var(--indigo);
+  border-radius:999px;padding:3px 11px;font-size:11px;font-weight:500;
+}
+.checked-line{font-size:10.5px;color:var(--gray);text-align:right}
+
+/* ---------- modal(詳細) ---------- */
+.modal{position:fixed;inset:0;z-index:100;display:flex;align-items:flex-end;justify-content:center;padding:0}
+.modal[hidden]{display:none}
+@media (min-width:640px){.modal{align-items:center;padding:24px}}
+.modal-backdrop{position:absolute;inset:0;background:rgba(38,36,30,.45)}
+.modal-card{
+  position:relative;background:var(--card);border:1px solid var(--line);border-radius:14px;
+  width:100%;max-width:600px;max-height:88vh;overflow-y:auto;
+  animation:pop .3s cubic-bezier(.2,.8,.3,1);
+}
+@keyframes pop{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.modal-thumb{position:relative;padding:12px 12px 0}
+.modal-thumb>svg{width:100%;height:auto;aspect-ratio:4/3;border-radius:6px}
+.modal-thumb .seal{top:26px;right:22px}
+.modal-close{
+  position:absolute;top:22px;left:22px;width:38px;height:38px;border-radius:50%;
+  border:1px solid var(--line);background:rgba(255,255,255,.92);color:var(--ink-soft);
+  font-size:18px;line-height:1;display:flex;align-items:center;justify-content:center;z-index:2;
+}
+.modal-close:hover{background:var(--line);color:var(--ink)}
+.modal-body{padding:18px 22px 26px}
+.modal-badges{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:2px}
+.modal-badges .status{position:static;background:var(--card)}
+.modal-name{
+  font-family:var(--font-display);font-weight:600;font-size:22px;line-height:1.45;
+  margin-top:10px;letter-spacing:.02em;
+}
+.modal-venue{margin-top:10px;font-size:13px;color:var(--ink-soft)}
+.modal-blurb{margin-top:10px;font-size:13px;color:var(--ink-soft)}
+.modal .rows{margin-top:16px}
+.modal .row .rl{flex:0 0 84px}
+.confirm-line{
+  margin-top:14px;font-size:11.5px;color:var(--ink-soft);line-height:1.7;
+  border-top:1px dashed var(--line);padding-top:10px;
+}
+.modal-actions{margin-top:16px;display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.btn-official{
+  display:inline-flex;align-items:center;gap:8px;border:0;background:var(--indigo);color:#fff;
+  border-radius:999px;padding:11px 22px;font-size:13px;font-weight:500;text-decoration:none;
+  transition:background .2s;
+}
+.btn-official:hover{background:#274069}
+.official-note{font-size:11px;color:var(--gray);max-width:340px}
+
+/* ---------- pages(固定ページ・記事・管理) ---------- */
+.page-view{padding-block:34px 90px}
+.page-view .back-home{
+  display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--card);
+  color:var(--indigo);border-radius:999px;padding:7px 16px;font-size:12.5px;text-decoration:none;margin-bottom:22px;
+}
+.page-view .back-home:hover{border-color:var(--indigo)}
+.page-view h2{font-family:var(--font-display);font-weight:600;font-size:26px;letter-spacing:.03em;margin-bottom:6px}
+.page-view h3{font-size:16px;font-weight:700;margin:26px 0 4px}
+.page-view p{margin-top:8px;font-size:13.5px;line-height:1.95}
+.page-view .meta-date{font-family:var(--font-mono);font-size:11px;color:var(--gray);margin-bottom:10px}
+.pg-list{list-style:none;margin-top:8px}
+.pg-list li{font-size:13.5px;padding:7px 0;border-bottom:1px solid var(--line)}
+.todo{background:var(--shu-soft);color:var(--shu);border-radius:4px;padding:1px 7px;font-weight:500}
+.article-lead{font-size:14.5px;color:var(--ink-soft);margin-top:4px}
+.article-body p{margin-top:12px}
+.article-body h3{margin-top:24px}
+.ad-slot{margin-top:26px}
+/* 管理一覧 */
+.tbl-scroll{overflow-x:auto;margin-top:14px;border:1px solid var(--line);border-radius:10px;background:var(--card)}
+/* 記事一覧 */
+.article-list{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));margin-top:18px}
+.article-card{
+  background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px 20px;
+  text-decoration:none;color:inherit;display:block;transition:transform .2s,box-shadow .2s;
+}
+.article-card:hover{transform:translateY(-2px);box-shadow:0 10px 22px rgba(38,36,30,.08)}
+.article-card h3{font-family:var(--font-display);font-weight:600;font-size:17px;margin:6px 0 0;letter-spacing:.02em}
+.article-card p{font-size:12.5px;color:var(--ink-soft);margin-top:8px}
+.article-card .a-date{font-family:var(--font-mono);font-size:10.5px;color:var(--gray)}
+.a-tag{display:inline-block;background:var(--indigo-soft);color:var(--indigo);border-radius:999px;padding:2px 10px;font-size:10.5px;font-weight:500}
+
+/* ---------- empty ---------- */
+.empty{text-align:center;padding:72px 20px 90px}
+.empty-seal{
+  width:58px;height:58px;margin:0 auto 18px;border-radius:50%;
+  border:1.5px dashed var(--line);color:var(--line);
+  font-family:var(--font-display);font-size:24px;font-weight:600;
+  display:flex;align-items:center;justify-content:center;
+}
+.empty h2{font-family:var(--font-display);font-weight:600;font-size:19px;letter-spacing:.03em}
+.empty p{color:var(--ink-soft);font-size:13px;margin-top:8px}
+.empty button{
+  margin-top:20px;border:1px solid var(--indigo);background:var(--card);color:var(--indigo);
+  border-radius:999px;padding:9px 24px;font-size:13px;transition:background .2s,color .2s;
+}
+.empty button:hover{background:var(--indigo);color:#fff}
+
+/* ---------- footer ---------- */
+footer{margin-top:72px;border-top:1px solid var(--line)}
+footer .wrap{padding-block:22px 60px}
+.foot-nav{display:flex;gap:8px 20px;flex-wrap:wrap;padding-bottom:16px;border-bottom:1px solid var(--line);margin-bottom:16px}
+.foot-nav a{color:var(--indigo);font-size:12.5px;text-decoration:underline;text-underline-offset:3px}
+footer p{font-size:12px;color:var(--ink-soft);line-height:1.9}
+footer p+p{margin-top:8px}
+
+@media (max-width:640px){
+  .hero-count strong{font-size:21px}
+  .field{flex:1 1 44%}
+  .field.sort{margin-left:0;flex:1 1 100%}
+  .tab{padding:10px 16px;font-size:13.5px}
+  .name-btn{font-size:18px}
+  .modal-close{top:18px;left:18px;width:42px;height:42px;font-size:20px}
+  body{font-size:14.5px}
+  #q,select,#date{min-height:46px;font-size:14px}
+  .chip{padding:9px 16px;font-size:13px}
+  .seal{width:46px;height:46px;top:14px;right:10px;font-size:18px}
+  .q-clear{width:30px;height:30px;right:5px}
+  .date-clear{width:26px;height:26px}
+  .rv{font-size:13.5px}
+  .blurb{font-size:13px}
+  .hide-sample{padding:6px 0}
+  .filter-toggle{padding:9px 16px;font-size:13px}
+  #reset{font-size:13.5px;padding:8px 6px}
+  .status{font-size:11.5px;padding:4px 11px}
+  .tag{font-size:11.5px;padding:4px 12px}
+  .legend{font-size:12px;gap:12px}
+  .page-view h2{font-size:22px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  html{scroll-behavior:auto}
+}
+
+/* 公開版: サンプル凡例を非表示 */
+.st-sample{display:none}
+</style>
+</head>
+<body>
+
+<header class="site-head">
+  <div class="wrap">
+    <a class="brand" href="#home">
+      <span class="brand-seal" aria-hidden="true">観</span>
+      <span class="brand-name">観覧帖<span class="brand-sub">EXHIBITION FINDER ・ 北関東</span></span>
+    </a>
+    <nav class="tabs" aria-label="表示切替">
+      <button class="tab on" data-view="find" aria-pressed="true">展覧会をさがす</button>
+      <button class="tab" data-view="fav" aria-pressed="false">お気に入り<span class="cnt" id="favCount">0</span></button>
+    </nav>
+  </div>
+</header>
+
+<main id="homeMain">
+  <section class="hero wrap">
+    <p class="eyebrow">MUSEUM ・ GALLERY ・ ART EVENT</p>
+    <h1>今、観に行ける<br>展覧会を。</h1>
+    <p class="lead">茨城・栃木・群馬・埼玉など北関東を中心に、美術館・博物館・アートイベントをさがして、印を押して保存。カードを押すと、料金や住所、公式サイトへのリンクまで確認できます。</p>
+    <p class="hero-count">本日 開催中<strong id="heroCount">—</strong>件<span class="sample-chip">✓公式確認済+サンプルで動作中</span></p>
+  </section>
+
+  <section class="toolbar" aria-label="検索条件">
+    <div class="wrap">
+      <div class="tb-row1">
+        <div class="search">
+          <svg class="search-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="1.5"/><path d="M11 11l3.2 3.2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          <input id="q" type="search" placeholder="展示名・会場名でさがす" aria-label="キーワードで検索" autocomplete="off">
+          <button id="qClear" class="q-clear" hidden aria-label="キーワードを消去">×</button>
+        </div>
+        <label class="field"><span>地域</span>
+          <select id="region">
+            <option value="all">すべての地域</option>
+            <option value="北海道">北海道</option>
+            <option value="東北">東北</option>
+            <option value="関東">関東</option>
+            <option value="中部">中部</option>
+            <option value="関西">関西</option>
+            <option value="中国">中国</option>
+            <option value="四国">四国</option>
+            <option value="九州・沖縄">九州・沖縄</option>
+          </select>
+        </label>
+        <label class="field"><span>都道府県</span>
+          <select id="pref"><option value="all">すべての県</option></select>
+        </label>
+        <label class="field"><span>開催期間</span>
+          <select id="period">
+            <option value="running">開催中</option>
+            <option value="upcoming">開催予定</option>
+            <option value="ended">終了した展示</option>
+            <option value="all">すべての期間</option>
+          </select>
+        </label>
+        <label class="field date-wrap-wrap"><span>行きたい日</span>
+          <span class="date-wrap">
+            <input type="date" id="date" aria-label="行きたい日で検索">
+            <button id="dateClear" class="date-clear" hidden aria-label="日指定を解除">×</button>
+          </span>
+        </label>
+      </div>
+      <div class="tb-row2">
+        <div class="chips" id="genres" role="group" aria-label="ジャンルで絞り込み"></div>
+        <label class="field sort"><span>並び替え</span>
+          <select id="sort">
+            <option value="end">終了が近い順</option>
+            <option value="start">開始が早い順</option>
+            <option value="fee">観覧料金が安い順</option>
+          </select>
+        </label>
+      </div>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <div class="meta-row">
+      <p id="resultCount" aria-live="polite"></p>
+      <div class="meta-actions">
+        <button id="closingOnly" class="filter-toggle" aria-pressed="false">終了間近だけ</button>
+        <button id="copyFavs" class="filter-toggle" hidden>お気に入りをコピー</button>
+        <label class="hide-sample" hidden><input type="checkbox" id="hideSample">サンプルを非表示</label>
+        <button id="reset" hidden>条件をリセット</button>
+      </div>
+    </div>
+    <div class="legend" aria-hidden="true">
+      <span class="lg-running"><i></i>開催中</span>
+      <span class="lg-closing"><i></i>終了間近(7日以内)</span>
+      <span class="lg-upcoming"><i></i>開催予定</span>
+      <span class="lg-ended"><i></i>終了</span>
+    </div>
+    <section id="grid" class="grid" aria-label="展覧会一覧"></section>
+    <div id="empty" class="empty" hidden>
+      <div class="empty-seal" aria-hidden="true">観</div>
+      <h2 id="emptyTitle">条件に合う展覧会が見つかりませんでした</h2>
+      <p id="emptyText">地域や期間を変えると、観られる展覧会が見つかるかもしれません。</p>
+      <button id="emptyReset">条件をリセット</button>
+    </div>
+  </div>
+</main>
+
+<div id="pageView" class="page-view wrap" hidden></div>
+
+<div id="modal" class="modal" hidden role="dialog" aria-modal="true" aria-labelledby="mTitle">
+  <div class="modal-backdrop" data-close></div>
+  <div class="modal-card">
+    <button class="modal-close" data-close aria-label="閉じる">×</button>
+    <div class="modal-thumb" id="mThumb"></div>
+    <div class="modal-body">
+      <div class="modal-badges" id="mBadges"></div>
+      <h2 class="modal-name" id="mTitle"></h2>
+      <p class="modal-venue" id="mVenue"></p>
+      <p class="modal-blurb" id="mBlurb"></p>
+      <div class="rows" id="mRows"></div>
+      <p class="confirm-line" id="mConfirm"></p>
+      <div class="modal-actions" id="mActions"></div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="wrap">
+    <nav class="foot-nav" aria-label="サイト案内">
+      <a href="#articles">特集・記事</a>
+      <a href="#about">このサイトについて</a>
+      <a href="#notice">掲載情報について</a>
+      <a href="#privacy">プライバシーポリシー</a>
+      <a href="#contact">お問い合わせ</a>
+      
+    </nav>
+    <p>※「✓ 公式確認済」の展示は、各施設の公式サイトで確認した実データです(各カードに最終確認日を表示)。会期・料金は変更される場合があるため、来館前に公式サイトで最新情報をご確認ください。「未確認」と表示された項目は推測値ではなく、公式情報を確認できていないことを示します。</p>
+    <p>※「サンプル」の表示がある展示は架空のサンプルデータです(実在の施設・イベントとは関係ありません)。</p>
+    <p>※お気に入りはこのブラウザ内に保存され、再読み込み後も維持されます(サーバー送信なし)。ログイン機能・外部API・有料サービスは未導入です。展示の追加・編集は、このHTML内スクリプト冒頭の「データ入力ガイド」に従って EXHIBITIONS 配列を編集してください。</p>
+  </div>
+</footer>
+
+<script>
+/* ================================================================
+ * ■ データ入力ガイド — 展示の追加・編集はこの下の配列だけ触ればOK
+ * ----------------------------------------------------------------
+ * EXHIBITIONS のオブジェクト 1 つが、カード 1 枚・詳細 1 件になります。
+ *   id          一意なID(英数字)。お気に入りの保存キーになるため後から変更しない
+ *   name        展示名(必須)
+ *   venue       施設名(必須)
+ *   room        会場内の室名(任意, 不明は null)
+ *   pref        都道府県(必須)※「都道府県」プルダウンはこの値から自動生成
+ *   region      地域: 北海道|東北|関東|中部|関西|中国|四国|九州・沖縄
+ *   genre       絵画|彫刻・工芸|写真|デザイン|現代アート|マンガ・イラスト|歴史・考古学|科学・自然
+ *   start,end   会期 'YYYY-MM-DD'(必須)
+ *   feeGeneral  一般料金(円)。無料は 0。不明は null → 画面に「未確認」と表示
+ *   feeStudent  大学生料金(円)。不明は null
+ *   feeNote     料金の補足(任意, 不明は null)
+ *   url         展示の公式URL。不明は null
+ *   address     施設の住所。未確認のままなら null
+ *   access      交通手段(例: 'JR〇〇駅から徒歩5分')。未確認は null
+ *   dataStatus  'verified' = 公式サイトで確認済 / 'sample' = 架空のサンプル
+ *   lastChecked 公式確認日 'YYYY-MM-DD'(sample は null)。30日超で「要再確認」表示
+ *   motif       カード画像: field|moon|stripes|build|leaf|waves|arc|grid
+ *   c           カード画像の色 3 色(装飾。実在作品の写真は使わない)
+ *   blurb       ひとこと紹介
+ * ※ 実在の展示は dataStatus:'verified' とし、公式サイトで確認できた項目だけ
+ *   値を入れ、確認できなかった項目は null(未確認)のままにします。
+ * ※ 独自の解説記事は下の ARTICLES 配列に追加します。
+ * ※ 広告・紹介リンクは AD_SLOTS に差し込みます(未設定なら何も表示されません)。
+ * ================================================================ */
+const GENRES=['絵画','彫刻・工芸','写真','デザイン','現代アート','マンガ・イラスト','歴史・考古学','科学・自然'];
+const EXHIBITIONS=[
+ /* ---- 北関東: 公式サイトで確認済の実データ ---- */
+ {id:'uchima', name:'内間安瑆・俊子展 色を織り、記憶を紡ぐ', venue:'埼玉県立近代美術館', room:null, pref:'埼玉県', region:'関東', genre:'絵画',
+  start:'2026-10-10', end:'2027-01-17', feeGeneral:null, feeStudent:null, feeNote:null,
+  url:'https://pref.spec.ed.jp/momas/2026uchima', address:null, access:null,
+  dataStatus:'verified', lastChecked:'2026-10-20',
+  motif:'stripes', c:['#2F4C7E','#C27C6E','#F1EFE8'], blurb:'版画とコラージュで日米を歩んだ二人の、初の大規模二人展。'},
+ {id:'matsumoto', name:'松本哲男展', venue:'栃木県立美術館', room:null, pref:'栃木県', region:'関東', genre:'絵画',
+  start:'2026-10-24', end:'2026-12-27', feeGeneral:1250, feeStudent:600, feeNote:'大高生 ¥600 / 中学生以下 無料 / 11月3日は観覧料無料',
+  url:'https://www.art.pref.tochigi.lg.jp/exhibition/t261024/index.html', address:'栃木県宇都宮市桜4-2-7', access:null,
+  dataStatus:'verified', lastChecked:'2026-10-20',
+  motif:'field', c:['#5F6E5A','#B98A3C','#F1EFE6'], blurb:'世界の景勝地を大画面に描いた日本画家、画業を総覧。'},
+ {id:'takashima', name:'没後50年 髙島野十郎展', venue:'宇都宮美術館', room:null, pref:'栃木県', region:'関東', genre:'絵画',
+  start:'2026-09-20', end:'2026-12-06', feeGeneral:1200, feeStudent:1000, feeNote:'大高生 ¥1,000 / 中学生・小学生 ¥800',
+  url:'https://u-moa.jp/exhibition/schedule.html', address:'栃木県宇都宮市長岡町1077', access:null,
+  dataStatus:'verified', lastChecked:'2026-10-20',
+  motif:'moon', c:['#2E3A52','#C9B27E','#F1EFE8'], blurb:'「孤高の画家」の素顔に迫る、過去最大規模の回顧展。'},
+ {id:'umoa-collection', name:'2026年度 第2回・コレクション展 Permanent Collection Part Ⅱ', venue:'宇都宮美術館', room:null, pref:'栃木県', region:'関東', genre:'絵画',
+  start:'2026-10-24', end:'2026-12-06', feeGeneral:310, feeStudent:210, feeNote:'大高生 ¥210 / 中学生・小学生 ¥100',
+  url:'https://u-moa.jp/exhibition/schedule.html', address:'栃木県宇都宮市長岡町1077', access:null,
+  dataStatus:'verified', lastChecked:'2026-10-20',
+  motif:'arc', c:['#5A6672','#B9B3A6','#F1EFE8'], blurb:'マグリット《大家族》ら、館のコレクションを紹介。'},
+ {id:'chokkoku', name:'コレクション展示 近現代の彫刻 Ⅲ', venue:'群馬県立館林美術館', room:'展示室1', pref:'群馬県', region:'関東', genre:'彫刻・工芸',
+  start:'2026-10-10', end:'2026-12-13', feeGeneral:null, feeStudent:null, feeNote:null,
+  url:'https://gmat.pref.gunma.jp/exhibition/', address:'群馬県館林市日向町2003', access:null,
+  dataStatus:'verified', lastChecked:'2026-10-20',
+  motif:'build', c:['#3A3833','#8E8A7E','#F1EFE8'], blurb:'館所蔵の近現代彫刻を、四季の庭園とともに紹介。'},
+ {id:'ponpon', name:'フランソワ・ポンポン関連資料より ―晩年のポンポンと若い作家たち―', venue:'群馬県立館林美術館', room:'別館「彫刻家のアトリエ」', pref:'群馬県', region:'関東', genre:'彫刻・工芸',
+  start:'2026-10-10', end:'2026-12-13', feeGeneral:null, feeStudent:null, feeNote:null,
+  url:'https://gmat.pref.gunma.jp/exhibition/', address:'群馬県館林市日向町2003', access:null,
+  dataStatus:'verified', lastChecked:'2026-10-20',
+  motif:'leaf', c:['#5F6E5A','#D8C9A8','#F1EFE6'], blurb:'《白い熊》の作家ポンポン、晩年と後進の資料を展示。'},
+ {id:'flymoon', name:'Fly to the Moon: 月をめぐる5つの物語', venue:'原美術館ARC', room:null, pref:'群馬県', region:'関東', genre:'現代アート',
+  start:'2026-09-12', end:'2027-01-11', feeGeneral:null, feeStudent:null, feeNote:null,
+  url:'https://www.haramuseum.or.jp/jp/arc/exhibition/2275/', address:null, access:null,
+  dataStatus:'verified', lastChecked:'2026-10-20',
+  motif:'moon', c:['#C9B27E','#B5432E','#2E3A52'], blurb:'4つの展示室を巡る、約120分の月世界旅行。'},
+ {id:'nakanishi', name:'中西夏之 緩やかにみつめるためにいつまでも佇む、装置', venue:'茨城県近代美術館', room:null, pref:'茨城県', region:'関東', genre:'現代アート',
+  start:'2026-11-12', end:'2027-01-17', feeGeneral:null, feeStudent:null, feeNote:null,
+  url:'https://www.modernart.museum.ibk.ed.jp/', address:'茨城県水戸市千波町東久保666-1', access:null,
+  dataStatus:'verified', lastChecked:'2026-10-20',
+  motif:'arc', c:['#7E96AE','#2E2C28','#F1EFE8'], blurb:'絵画を「装置」として再考する、中西夏之の回顧展。'},
+ /* ---- 首都圏・関西: 公式サイトで確認済の実データ ---- */
+ {id:'louvre', name:'ルーヴル美術館展 ルネサンス', venue:'国立新美術館', room:'企画展示室1E', pref:'東京都', region:'関東', genre:'絵画',
+  start:'2026-09-09', end:'2026-12-13', feeGeneral:2400, feeStudent:1400, feeNote:'高校生 ¥1,000 / 中学生以下 無料 / 前売 一般 ¥2,200',
+  url:'https://www.nact.jp/exhibition_special/2026/louvre2026/', address:'東京都港区六本木7-22-2', access:null,
+  dataStatus:'verified', lastChecked:'2026-10-20',
+  motif:'arc', c:['#33507F','#C9B27E','#F2EFE7'], blurb:'ダ・ヴィンチを中心に、ルネサンス美術の精華をルーヴルが送る。'},
+ {id:'shojomanga', name:'少女漫画・インフィニティ 萩尾望都×山岸凉子×大和和紀 三人展', venue:'国立新美術館', room:'企画展示室2E', pref:'東京都', region:'関東', genre:'マンガ・イラスト',
+  start:'2026-10-28', end:'2027-02-08', feeGeneral:2200, feeStudent:1000, feeNote:'高校生 ¥500 / 中学生以下 無料 / 前売 一般 ¥2,000',
+  url:'https://www.nact.jp/exhibition_special/2026/shojomanga/', address:'東京都港区六本木7-22-2', access:null,
+  dataStatus:'verified', lastChecked:'2026-10-20',
+  motif:'leaf', c:['#C27C6E','#D8C9A8','#F5EFE8'], blurb:'少女漫画の三人のレジェンド、原画と資料でたどる画業の軌跡。'},
+ {id:'daitokuji', name:'開創700年記念 特別展「大徳寺 本朝無双之禅苑」', venue:'東京国立博物館', room:'平成館', pref:'東京都', region:'関東', genre:'歴史・考古学',
+  start:'2026-10-14', end:'2026-12-06', feeGeneral:2300, feeStudent:1300, feeNote:'高校生 ¥900 / 中学生以下 無料 / 事前予約不要',
+  url:'https://www.tnm.jp/modules/r_free_page/index.php?id=2770', address:'東京都台東区上野公園13-9', access:'JR上野駅公園口・鶯谷駅南口より徒歩10分 / 東京メトロ上野駅・千代田線根津駅より徒歩15分',
+  dataStatus:'verified', lastChecked:'2026-10-20',
+  motif:'moon', c:['#3A3833','#8A7B5C','#F1EDE4'], blurb:'大徳寺開創700年。通常非公開の名宝が一堂に会す、東京初の展覧会。'},
+ {id:'zen-ghibli', name:'禅とジブリ', venue:'京都市京セラ美術館', room:'新館 東山キューブ', pref:'京都府', region:'関西', genre:'現代アート',
+  start:'2026-10-03', end:'2026-12-06', feeGeneral:1900, feeStudent:1900, feeNote:'中学・高校生 ¥1,500 / 小学生 ¥1,100 / 未就学児無料',
+  url:'https://kyotocity-kyocera.museum/exhibition/20261003-20261206', address:'京都市左京区岡崎円勝寺町124', access:null,
+  dataStatus:'verified', lastChecked:'2026-10-20',
+  motif:'field', c:['#7E96AE','#C9B27E','#F1EFE8'], blurb:'ジブリ作品を通して禅的なまなざしに触れる、体感型の展覧会。'},
+ {id:'yamaga', name:'生誕140年記念 染織家 山鹿清華─宙翔ぶイマジネーション', venue:'京都市京セラ美術館', room:'本館 南回廊1階', pref:'京都府', region:'関西', genre:'彫刻・工芸',
+  start:'2026-09-19', end:'2026-12-20', feeGeneral:1800, feeStudent:1300, feeNote:'大学・専門・高校生 ¥1,300 / 中学生以下 無料',
+  url:'https://kyotocity-kyocera.museum/exhibition/20260919-20261220', address:'京都市左京区岡崎円勝寺町124', access:null,
+  dataStatus:'verified', lastChecked:'2026-10-20',
+  motif:'waves', c:['#B98A3C','#7D5A6C','#F2EFE6'], blurb:'染織のパイオニア山鹿清華、40年ぶりの回顧展。'},
+ {id:'constellation', name:'共時的星叢──時を共にした星たち 越境する芸術のまなざし', venue:'東京都現代美術館', room:'企画展示室1F・3F', pref:'東京都', region:'関東', genre:'現代アート',
+  start:'2026-09-05', end:'2026-12-13', feeGeneral:2000, feeStudent:1400, feeNote:'中高生 ¥800 / 小学生以下 無料',
+  url:'https://www.mot-art-museum.jp/exhibitions/Constellation/', address:null, access:null,
+  dataStatus:'verified', lastChecked:'2026-10-20',
+  motif:'field', c:['#2E3A52','#8E97B8','#C9B27E'], blurb:'近代台湾と日本の美術・資料が星座のように交錯する、大規模展。'},
+ {id:'yumeji', name:'竹久夢二 時代を創る表現者', venue:'東京国立近代美術館', room:null, pref:'東京都', region:'関東', genre:'絵画',
+  start:'2026-10-23', end:'2027-01-11', feeGeneral:2100, feeStudent:1200, feeNote:'中学生以下 無料',
+  url:'https://www.momat.go.jp/am/exhibition/', address:'東京都千代田区北の丸公園3-1', access:'東京メトロ東西線 竹橋駅1b出口から徒歩3分',
+  dataStatus:'verified', lastChecked:'2026-10-20',
+  motif:'moon', c:['#C27C6E','#B9B3A6','#F3EFE6'], blurb:'竹久夢二の美の核に迫る大規模回顧展。'},
+ {id:'sasamoto', name:'笹本晃 ラボラトリー', venue:'国立国際美術館', room:null, pref:'大阪府', region:'関西', genre:'現代アート',
+  start:'2026-07-19', end:'2026-11-03', feeGeneral:1800, feeStudent:1200, feeNote:'高校生以下・18歳未満 無料 / 金曜17〜20時 一般 ¥1,600',
+  url:'https://www.nmao.go.jp/events/event/20260719_sasamoto-aki/', address:null, access:null,
+  dataStatus:'verified', lastChecked:'2026-10-20',
+  motif:'build', c:['#5A6672','#C7C2B4','#F1EFE8'], blurb:'空間ごと作品にする、笹本晃のインスタレーション「ラボラトリー」。'},
+ {id:'orsay', name:'東京都美術館開館100周年記念 オルセー美術館所蔵 いまを生きる歓び', venue:'東京都美術館', room:null, pref:'東京都', region:'関東', genre:'絵画',
+  start:'2026-11-14', end:'2027-03-28', feeGeneral:null, feeStudent:null, feeNote:null,
+  url:'https://www.tobikan.jp/2026_orsay.html', address:'東京都台東区上野公園8-36', access:null,
+  dataStatus:'verified', lastChecked:'2026-10-20',
+  motif:'field', c:['#8E97B8','#C9B27E','#F2EFE6'], blurb:'オルセー所蔵の近代絵画が、開館100年の東京都美術館へ。'},
+ {id:'mori-mariko', name:'森万里子:燦燦 Mariko Mori: All That Shines', venue:'森美術館', room:null, pref:'東京都', region:'関東', genre:'現代アート',
+  start:'2026-10-31', end:'2027-03-28', feeGeneral:null, feeStudent:null, feeNote:null,
+  url:'https://www.mori.art.museum/jp/', address:'東京都港区六本木6-10-1 六本木ヒルズ森タワー53階', access:null,
+  dataStatus:'verified', lastChecked:'2026-10-20',
+  motif:'moon', c:['#2E3A52','#C9B27E','#F1EFE8'], blurb:'3年ぶりとなる森万里子の個展。光るものたちの燦燦たる世界。'},
+ {id:'mot-collection', name:'MOTコレクション いつかの光を今みている', venue:'東京都現代美術館', room:null, pref:'東京都', region:'関東', genre:'現代アート',
+  start:'2026-09-19', end:'2027-01-06', feeGeneral:500, feeStudent:400, feeNote:'高校生・65歳以上 ¥250 / 中学生以下 無料',
+  url:'https://www.mot-art-museum.jp/exhibitions/mot-collection-260919/', address:null, access:null,
+  dataStatus:'verified', lastChecked:'2026-10-20',
+  motif:'stripes', c:['#4E7E78','#8E8A7E','#F1EFE8'], blurb:'MOTコレクションによる、「光」をめぐる所蔵作品展。'},
+ /* ---- 架空のサンプルデータ(機能確認用) ---- */
+ {id:'hikari', name:'光の印象派 — モネとその周辺', venue:'蒼美術館', room:null, pref:'東京都', region:'関東', genre:'絵画',
+  start:'2026-09-12', end:'2026-11-08', feeGeneral:2200, feeStudent:1700, feeNote:'高校生以下 無料',
+  url:null, address:null, access:null, dataStatus:'sample', lastChecked:null,
+  motif:'field', c:['#7E96AE','#C9B27E','#EFE9DC'], blurb:'光のとらえかたをたどる、印象派から20世紀への歩み。'},
+ {id:'heian', name:'仏像にみる平安の心', venue:'慈林博物館', room:null, pref:'奈良県', region:'関西', genre:'歴史・考古学',
+  start:'2026-10-03', end:'2026-11-15', feeGeneral:1500, feeStudent:1000, feeNote:'',
+  url:null, address:null, access:null, dataStatus:'sample', lastChecked:null,
+  motif:'moon', c:['#8A7B5C','#3A3833','#EFE9DC'], blurb:'平安時代の仏像彫刻に息づく、造形の心をたどる。'},
+ {id:'boku', name:'墨と余白 — 現代書の挑戦', venue:'澤崎記念美術館', room:null, pref:'京都府', region:'関西', genre:'現代アート',
+  start:'2026-10-10', end:'2026-10-25', feeGeneral:1200, feeStudent:900, feeNote:'',
+  url:null, address:null, access:null, dataStatus:'sample', lastChecked:null,
+  motif:'stripes', c:['#2E2C28','#B9B3A6','#F3EFE6'], blurb:'書の余白が生む、現代の美。若手書家の最新作へ。'},
+ {id:'photo', name:'写真は嘘をつく', venue:'港南フォトギャラリー', room:null, pref:'神奈川県', region:'関東', genre:'写真',
+  start:'2026-10-17', end:'2026-11-29', feeGeneral:900, feeStudent:700, feeNote:'中学生以下 無料',
+  url:null, address:null, access:null, dataStatus:'sample', lastChecked:null,
+  motif:'build', c:['#5A6672','#C7C2B4','#F1EFE8'], blurb:'加工と再構成であらわれる、もうひとつの現実。'},
+ {id:'craft', name:'北欧クラフトの器', venue:'白樺デザイン館', room:null, pref:'北海道', region:'北海道', genre:'彫刻・工芸',
+  start:'2026-11-01', end:'2026-12-20', feeGeneral:1000, feeStudent:800, feeNote:'',
+  url:null, address:null, access:null, dataStatus:'sample', lastChecked:null,
+  motif:'leaf', c:['#8A9B84','#D8C9A8','#F1EFE6'], blurb:'暮らしの器から、北欧のクラフト思想へ。'},
+ {id:'ukiyo', name:'浮世絵と江戸の旅', venue:'瀬戸内浮世絵美術館', room:null, pref:'香川県', region:'四国', genre:'絵画',
+  start:'2026-10-24', end:'2026-12-06', feeGeneral:1400, feeStudent:1100, feeNote:'',
+  url:null, address:null, access:null, dataStatus:'sample', lastChecked:null,
+  motif:'waves', c:['#33507F','#C27C6E','#F2EFE6'], blurb:'江戸の旅情を、浮世絵の名品とともに。'},
+ {id:'uchu', name:'宇宙への手紙 — 天文学とアート', venue:'星見科学館', room:null, pref:'福岡県', region:'九州・沖縄', genre:'科学・自然',
+  start:'2026-11-14', end:'2027-01-11', feeGeneral:1600, feeStudent:1200, feeNote:'高校生以下 ¥800',
+  url:null, address:null, access:null, dataStatus:'sample', lastChecked:null,
+  motif:'field', c:['#2E3A52','#8E97B8','#C9B27E'], blurb:'宇宙をめぐる、科学とアートの対話。'},
+ {id:'nouveau', name:'アール・ヌーヴォーの装飾', venue:'山手装飾美術館', room:null, pref:'兵庫県', region:'関西', genre:'デザイン',
+  start:'2026-09-26', end:'2026-11-03', feeGeneral:2000, feeStudent:1600, feeNote:'',
+  url:null, address:null, access:null, dataStatus:'sample', lastChecked:null,
+  motif:'arc', c:['#7D5A6C','#C9B27E','#F2EFE7'], blurb:'花と曲線、世紀末の装飾芸術の華。'},
+ {id:'jomon', name:'縄文の造形', venue:'三内縄文記念館', room:null, pref:'青森県', region:'東北', genre:'歴史・考古学',
+  start:'2026-10-31', end:'2026-12-13', feeGeneral:0, feeStudent:0, feeNote:'常設展込み',
+  url:null, address:null, access:null, dataStatus:'sample', lastChecked:null,
+  motif:'build', c:['#9C6B45','#4A4238','#E9E2D3'], blurb:'縄文土器から読み解く、1万年前の造形感覚。'},
+ {id:'sound', name:'音と形 — サウンドアートの現在', venue:'諏訪湖サウンドアートセンター', room:null, pref:'長野県', region:'中部', genre:'現代アート',
+  start:'2026-10-09', end:'2026-10-24', feeGeneral:800, feeStudent:600, feeNote:null,
+  url:null, address:null, access:null, dataStatus:'sample', lastChecked:null,
+  motif:'waves', c:['#4E7E78','#2E2C28','#F1EFE8'], blurb:'音がかたちになる、新しい芸術のいま。'},
+ {id:'silk', name:'シルクロードの染と織', venue:'東洋織物館', room:null, pref:'京都府', region:'関西', genre:'彫刻・工芸',
+  start:'2026-08-20', end:'2026-10-18', feeGeneral:1300, feeStudent:1000, feeNote:'',
+  url:null, address:null, access:null, dataStatus:'sample', lastChecked:null,
+  motif:'stripes', c:['#B98A3C','#7D4B3A','#F1EBDD'], blurb:'絹の道が運んだ、染と織の技術と美。'},
+ {id:'city', name:'未来のまち設計展', venue:'みなとデザインミュージアム', room:null, pref:'大阪府', region:'関西', genre:'デザイン',
+  start:'2026-11-07', end:'2026-12-27', feeGeneral:1100, feeStudent:900, feeNote:'',
+  url:null, address:null, access:null, dataStatus:'sample', lastChecked:null,
+  motif:'build', c:['#6B7A8F','#33507F','#F1EFE8'], blurb:'これからの街をデザインする、提案と実験。'},
+ {id:'neko', name:'猫の美術史', venue:'坂の上ミュージアム', room:null, pref:'広島県', region:'中国', genre:'絵画',
+  start:'2026-10-16', end:'2026-11-23', feeGeneral:1500, feeStudent:1000, feeNote:'小学生以下 無料',
+  url:null, address:null, access:null, dataStatus:'sample', lastChecked:null,
+  motif:'moon', c:['#C27C6E','#3A3833','#F3EFE6'], blurb:'猫は美術史のなかで、どう描かれてきたか。'},
+ {id:'minakata', name:'南方熊楠と自然の知', venue:'田辺自然史博物館', room:null, pref:'和歌山県', region:'関西', genre:'科学・自然',
+  start:'2026-10-02', end:'2026-11-09', feeGeneral:0, feeStudent:0, feeNote:'企画展',
+  url:null, address:null, access:null, dataStatus:'sample', lastChecked:null,
+  motif:'leaf', c:['#5F6E5A','#8A9B84','#F0EEE3'], blurb:'自然の中の知恵を、生物学者の足跡とともに。'},
+ {id:'sengo', name:'写真・戦後のまなざし', venue:'八ヶ岳写真館', room:null, pref:'山梨県', region:'中部', genre:'写真',
+  start:'2026-11-21', end:'2027-02-06', feeGeneral:1000, feeStudent:800, feeNote:null,
+  url:null, address:null, access:null, dataStatus:'sample', lastChecked:null,
+  motif:'stripes', c:['#3A3833','#8E8A7E','#EFEBE0'], blurb:'戦後日本を写した、写真家たちのまなざし。'},
+ {id:'tetsu', name:'鉄と炎 — 現代彫刻の素材', venue:'玄野彫刻美術館', room:null, pref:'愛知県', region:'中部', genre:'彫刻・工芸',
+  start:'2026-10-05', end:'2026-11-24', feeGeneral:1700, feeStudent:1300, feeNote:'',
+  url:null, address:null, access:null, dataStatus:'sample', lastChecked:null,
+  motif:'arc', c:['#B5432E','#3A3833','#F1EDE4'], blurb:'鉄を彫る、燃やす、鍛える。素材と格闘する彫刻。'},
+ {id:'bingata', name:'琉球の紅型 — 色と文様', venue:'首里染織館', room:null, pref:'沖縄県', region:'九州・沖縄', genre:'彫刻・工芸',
+  start:'2026-10-28', end:'2026-12-06', feeGeneral:1200, feeStudent:900, feeNote:'中学生以下 無料',
+  url:null, address:null, access:null, dataStatus:'sample', lastChecked:null,
+  motif:'leaf', c:['#C27C6E','#4E7E78','#F2EEE2'], blurb:'紅型の色と文様に宿る、琉球の美意識。'},
+ {id:'minimal', name:'ミニマリズムの系譜', venue:'湾岸現代美術館', room:null, pref:'東京都', region:'関東', genre:'現代アート',
+  start:'2026-10-19', end:'2026-12-13', feeGeneral:2400, feeStudent:1900, feeNote:'',
+  url:null, address:null, access:null, dataStatus:'sample', lastChecked:null,
+  motif:'grid', c:['#C7C2B4','#33507F','#F3F1EA'], blurb:'無駄を削ぎ落とした、ミニマルの系譜。'}
+];
+
+/* ============ 独自の解説記事(追加はここに1オブジェクトずつ) ============ */
+const ARTICLES=[
+ {slug:'kitakanto-start', title:'まずはこの4館から|北関東の美術館めぐりの始め方', date:'2026-10-20', tags:['特集','北関東'],
+  lead:'茨城・栃木・群馬・埼玉——東京から気軽に行ける北関東には、個性のある美術館が揃っています。このサイトのさがし方とお気に入り機能を使って、初めての美術館めぐりを計画する手順を紹介します。',
+  body:`<p>美術館めぐりを始めるときの壁は、「どこを回ればいいのか分からない」「料金や会期の調べ方が面倒」という2つ。観覧帖はこの2つを、<strong>絞り込み → お気に入り → コピーして計画</strong>という3ステップで解決するために作りました。</p>
+  <h3>Step 1|エリアとジャンルで絞り込む</h3>
+  <p>上部の「都道府県」で茨城・栃木・群馬・埼玉を選ぶと、その県の展示だけが表示されます。「開催期間」を「開催中」にすれば、今日行ける展示だけに。「行きたい日」に日付を入れれば、その日に開いている展示だけに絞れます。</p>
+  <h3>Step 2|気になる展示の印を押す</h3>
+  <p>カード右上の朱色の「観」の印がお気に入りです。押した展示は「お気に入り」タブに集まり、再読み込みしても消えません(このブラウザ内に保存されます)。</p>
+  <h3>Step 3|コピーして旅の計画に</h3>
+  <p>お気に入りタブの「お気に入りをコピー」を押すと、展示名・会場・会期・料金・公式サイトURLをまとめたテキストがクリップボードに写ります。メモ帳や旅行プランのシートに貼れば、それがそのまま行程表の材料です。</p>
+  <h3>北関東でこの秋観られる展示の例</h3>
+  <p>たとえば埼玉県立近代美術館では版画とコラージュの二人展「内間安瑆・俊子展 色を織り、記憶を紡ぐ」、栃木県立美術館では大画面の日本画家を紹介する「松本哲男展」、宇都宮美術館では「没後50年 髙島野十郎展」、群馬県立館林美術館では彫刻のコレクション展示、茨城県近代美術館では11月から「中西夏之」の回顧展が始まります。詳細・料金は各展示のカードから公式サイトをご確認ください。</p>
+  <h3>公式情報だけを載せる理由</h3>
+  <p>このサイトは、施設の公式サイトで確認できた情報だけを掲載し、確認できなかった項目は「未確認」と表示します。うろ覚えの情報で遠くまで行って閉館していた——そんな思いをしないための設計です。カードには最終確認日も付いているので、情報の古さも見分けられます。</p>`}
+];
+
+/* ============ 広告・紹介リンクの差し込み口(収益化用) ============ */
+/* 将来的にここへ広告タグや提携リンクを追加します。現時点では空(何も表示されません)。
+ * 例: AD_SLOTS.push({id:'article-bottom', html:'<div>…広告コード…</div>'});
+ * 導入前に費用・利用規約を確認し、プライバシーポリシーの記載も更新してください。 */
+const AD_SLOTS=[];
+function adSlot(id){const s=AD_SLOTS.find(a=>a.id===id);return s?s.html:''}
+
+/* ============ 固定ページ ============ */
+const PAGES={
+ about:{title:'このサイトについて',body:`
+  <p>観覧帖は、美術館・博物館・アートイベントをさがして、来館の計画まで立てられる展示イベント検索サービスです。現在は茨城・栃木・群馬・埼玉など北関東を中心に情報を収集中です。</p>
+  <h3>運営者情報</h3>
+  <ul class="pg-list">
+    <li>運営者:観覧帖編集室</li>
+    <li>連絡先:xupc0he301a5htge5quf@outlook.jp</li>
+    <li>SNS:なし</li>
+  </ul>
+  <h3>データの方針</h3>
+  <p>実在の展示は、各施設の公式サイトで確認できた情報だけを掲載し、カードに「✓ 公式確認済」と最終確認日を表示します。確認できなかった項目は推測で補完せず「未確認」と表示します。機能確認用の架空データには「サンプル」の目印を付けています。</p>
+  <h3>無料で動く仕組み</h3>
+  <p>このサービスは単一のHTMLファイルと、利用者のブラウザ内に保存されるお気に入りだけで動作します。サーバー側のデータベースや有料APIは使っていません。</p>`},
+ contact:{title:'お問い合わせ',body:`
+  <p>掲載内容の訂正・ご意見・お問い合わせは、下記の連絡先までお願いします。</p>
+  <ul class="pg-list">
+    <li>メール:xupc0he301a5htge5quf@outlook.jp</li>
+  </ul>
+  <h3>問い合わせ窓口をつくる方法(無料)</h3>
+  <p>・Googleフォーム(無料)で問い合わせフォームを作り、このページにリンクを置く。</p>
+  <p>・フリーメール(Gmail など)のアドレスを記載する。</p>
+  <p class="todo">※いずれかの方法で窓口を用意し、上の連絡先を入力してください。入力が済むまでこの欄は仮の状態です。</p>`},
+ privacy:{title:'プライバシーポリシー',body:`
+  <p>観覧帖(以下「本サイト」)は、以下の方針で情報を取り扱います。</p>
+  <h3>1. 収集する情報</h3>
+  <p>本サイトは、お名前・メールアドレスなどの個人情報を収集しません。閲覧・検索・お気に入り登録はすべて利用者のブラウザ内で完結し、サーバーへ送信されません。</p>
+  <h3>2. お気に入りの保存</h3>
+  <p>お気に入りの登録状態は、利用者のブラウザの localStorage に保存されます。ブラウザの設定変更やデータ消去で失われることがあります。</p>
+  <h3>3. アクセス解析・広告</h3>
+  <p>現時点でアクセス解析・広告は導入していません。今後導入する場合は、利用するサービスの名称・目的・停止方法をこのページに追記します。</p>
+  <h3>4. 外部サイトへのリンク</h3>
+  <p>本サイトからリンクした展示の公式サイトにおける情報の取り扱いについては、各サイトのポリシーをご確認ください。</p>
+  <h3>5. お問い合わせ</h3>
+  <p>個人情報の取り扱いに関するお問い合わせ:xupc0he301a5htge5quf@outlook.jp</p>
+  <p class="meta-date">制定日:2026-10-21</p>`},
+ notice:{title:'掲載情報について',body:`
+  <h3>データの種類</h3>
+  <p>「✓ 公式確認済」——各施設の公式サイトで確認した実データです。カードと詳細に最終確認日を表示しています。</p>
+  <p>「サンプル」——機能確認用の架空データです。実在の施設・イベントとは関係ありません。</p>
+  <h3>未確認項目の扱い</h3>
+  <p>料金・住所など確認できていない項目は、推測で補完せず「未確認」と表示します。来館前に必ず公式サイトで最新情報をご確認ください。</p>
+  <h3>情報の正確性</h3>
+  <p>会期・料金・開館状況は変更されることがあります。掲載内容に誤りを見つけた場合は、<a href="#contact">お問い合わせ</a>ページの連絡先までご連絡ください。</p>
+  <h3>画像・著作権</h3>
+  <p>カードの画像は本サイト独自の装飾イメージで、実在の作品画像を使用していません。展示の紹介は各公式サイトへのリンクが基本です。公式サイトの情報・画像の利用規約を尊重します。</p>`},
+ articles:{title:'特集・記事',body:''}
+};
+
+/* ============ 画像(装飾SVG)生成 ============ */
+function art(ex){
+  const [a,b,base]=ex.c, id=ex.id;
+  const open=`<svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">`;
+  const bg=`<rect width="400" height="300" fill="${base}"/>`;
+  switch(ex.motif){
+    case 'field': return `${open}
+      <defs><linearGradient id="g${id}" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="${a}"/><stop offset="1" stop-color="${b}"/></linearGradient></defs>
+      ${bg}<rect width="400" height="205" fill="url(#g${id})"/>
+      <circle cx="252" cy="146" r="44" fill="${base}" opacity=".92"/>
+      <rect y="205" width="400" height="95" fill="${a}"/>
+      <rect y="205" width="400" height="4" fill="${base}" opacity=".55"/>
+      <ellipse cx="252" cy="226" rx="58" ry="6" fill="${base}" opacity=".45"/></svg>`;
+    case 'moon': return `${open}${bg}
+      <circle cx="150" cy="126" r="78" fill="${a}"/>
+      <rect y="212" width="400" height="3" fill="${b}"/>
+      <circle cx="306" cy="212" r="10" fill="${b}"/>
+      <circle cx="306" cy="212" r="22" fill="none" stroke="${b}" stroke-width="1.5" opacity=".55"/></svg>`;
+    case 'stripes':{
+      const bands=[[0,58,a],[58,14,base,1],[72,44,b],[116,10,base,1],[126,70,a],[196,12,base,1],[208,40,b],[248,10,base,1],[258,142,a]];
+      return `${open}${bg}${bands.map(([x,w,col,op])=>`<rect x="${x}" width="${w}" height="300" fill="${col}"${op?` opacity="${op}"`:''}/>`).join('')}</svg>`;
+    }
+    case 'build': return `${open}${bg}
+      <rect x="42" y="48" width="132" height="204" fill="${a}"/>
+      <circle cx="258" cy="106" r="58" fill="${b}"/>
+      <line x1="58" y1="254" x2="358" y2="58" stroke="${b}" stroke-width="5" opacity=".8"/>
+      <rect x="208" y="194" width="112" height="58" fill="${a}" opacity=".55"/></svg>`;
+    case 'leaf': return `${open}${bg}
+      <path d="M204,52 C286,60 322,138 300,202 C280,262 198,272 146,240 C96,208 88,140 120,98 C146,64 168,48 204,52 Z" fill="${a}"/>
+      <path d="M236,120 C280,128 292,168 274,198 C256,228 210,228 188,206 C168,184 170,146 192,128 C206,116 220,118 236,120 Z" fill="${b}" opacity=".92"/>
+      <path d="M204,272 C210,220 220,170 258,120" stroke="${base}" stroke-width="5" fill="none" opacity=".85"/></svg>`;
+    case 'waves': return `${open}${bg}
+      <path d="M0,118 Q50,94 100,118 T200,118 T300,118 T400,118 V300 H0 Z" fill="${a}"/>
+      <path d="M0,170 Q50,148 100,170 T200,170 T300,170 T400,170 V300 H0 Z" fill="${b}" opacity=".92"/>
+      <path d="M0,222 Q50,204 100,222 T200,222 T300,222 T400,222 V300 H0 Z" fill="${a}" opacity=".72"/></svg>`;
+    case 'arc':{
+      const radii=[56,98,140,182,224];
+      return `${open}${bg}${radii.map((r,i)=>`<circle cx="200" cy="298" r="${r}" fill="none" stroke="${i===2?b:a}" stroke-width="15" opacity="${.85-i*.09}"/>`).join('')}</svg>`;
+    }
+    case 'grid': return `${open}${bg}
+      <rect width="168" height="146" fill="${a}"/>
+      <rect x="188" width="212" height="86" fill="${b}"/>
+      <rect x="188" y="106" width="212" height="118" fill="${a}" opacity=".5"/>
+      <rect y="166" width="168" height="134" fill="${b}" opacity=".85"/>
+      <rect x="188" y="244" width="212" height="56" fill="${a}"/></svg>`;
+  }
+  return '';
+}
+
+/* ============ 状態 ============ */
+const KEY='kanrancho-favorites-v1';
+const TODAY=(()=>{const d=new Date();d.setHours(0,0,0,0);return d})();
+const STALE_DAYS=30;
+const PUBLISH_ONLY_VERIFIED=true; /* 公開版: sampleを常時除外(データ自体は保持) */
+const DEFAULTS={q:'',region:'all',pref:'all',genre:'all',period:'running',date:'',sort:'end',view:'find',hideSample:false,closingOnly:false};
+let state={...DEFAULTS};
+let favs=new Set();
+try{favs=new Set(JSON.parse(localStorage.getItem(KEY)||'[]'))}catch(e){}
+
+const $=s=>document.querySelector(s);
+const grid=$('#grid'), empty=$('#empty');
+const d=s=>new Date(s+'T00:00:00');
+const DAY=86400000;
+
+function status(ex){
+  if(d(ex.end)<TODAY) return {k:'ended'};
+  if(d(ex.start)>TODAY){
+    const n=Math.ceil((d(ex.start)-TODAY)/DAY);
+    return {k:'upcoming',days:n};
+  }
+  const n=Math.ceil((d(ex.end)-TODAY)/DAY);
+  return {k:n<=7?'closing':'running',days:n};
+}
+const STATUS_LABEL={running:'開催中',closing:'終了間近',upcoming:'開催予定',ended:'終了'};
+
+function fmt(dstr){
+  const [y,m,dd]=dstr.split('-').map(Number);
+  return `${y}.${m}.${dd}`;
+}
+function range(ex){
+  const sy=ex.start.slice(0,4), ey=ex.end.slice(0,4);
+  if(sy===ey){
+    const [,sm,sd]=ex.start.split('-').map(Number),[,em,ed]=ex.end.split('-').map(Number);
+    return `${sy}.${sm}.${sd} — ${em}.${ed}`;
+  }
+  return `${fmt(ex.start)} — ${fmt(ex.end)}`;
+}
+function daysText(st){
+  if(st.k==='closing') return `<em class="days closing">終了まで${st.days===0?'本日':st.days+'日'}</em>`;
+  if(st.k==='running') return `<em class="days">終了まで${st.days}日</em>`;
+  if(st.k==='upcoming') return `<em class="days">開始まで${st.days}日</em>`;
+  return '';
+}
+function isStale(ex){
+  return ex.dataStatus==='verified'&&ex.lastChecked&&Math.floor((TODAY-d(ex.lastChecked))/DAY)>STALE_DAYS;
+}
+function feeText(ex){
+  if(ex.feeGeneral==null) return `<span class="unknown">未確認</span><em class="note">料金は公式サイトでご確認ください</em>`;
+  if(ex.feeGeneral===0) return '観覧無料';
+  return `一般 ¥${ex.feeGeneral.toLocaleString()}`;
+}
+function feeStudentNote(ex){
+  if(ex.feeGeneral==null) return '';
+  if(ex.feeStudent!=null&&ex.feeStudent!==ex.feeGeneral) return `<em class="note">大学生 ¥${ex.feeStudent.toLocaleString()}</em>`;
+  return '';
+}
+function dsChip(ex){
+  return ex.dataStatus==='verified'
+    ?`<span class="ds-chip ok" title="公式サイトで確認済(最終確認 ${ex.lastChecked?ex.lastChecked.replace(/-/g,'.'):'—'})"><span class="tick">✓</span>公式確認済</span>`
+    :`<span class="ds-chip" title="架空のサンプルデータです">サンプル</span>`;
+}
+function staleChip(ex){
+  return isStale(ex)?`<span class="ds-chip stale" title="最終確認から${STALE_DAYS}日以上経過しています">要再確認</span>`:'';
+}
+
+/* ============ 生成 ============ */
+function cardHTML(ex,i){
+  const st=status(ex), on=favs.has(ex.id);
+  const ended=st.k==='ended';
+  const mark=ex.dataStatus==='sample'?'<span class="sample-mark">SAMPLE</span>':'';
+  const checked=ex.dataStatus==='verified'&&ex.lastChecked?`<span class="checked-line">最終確認 ${ex.lastChecked.replace(/-/g,'.')}${isStale(ex)?'(要再確認)':''}</span>`:'';
+  return `<article class="card${ended?' ended':''}" data-id="${ex.id}" style="animation-delay:${Math.min(i*35,420)}ms">
+    <div class="thumb">${art(ex)}
+      <span class="status st-${st.k}">${STATUS_LABEL[st.k]}</span>
+      ${mark}
+      <button class="seal${on?' on':''}" data-fav="${ex.id}" aria-pressed="${on}"
+        aria-label="${on?'お気に入りを解除':'お気に入りに登録'}" title="お気に入り"><span>観</span></button>
+    </div>
+    <div class="label">
+      <div class="venue-row"><p class="venue">${ex.venue}｜${ex.pref}</p>${dsChip(ex)}${staleChip(ex)}</div>
+      <h3 class="name"><button class="name-btn" data-detail="${ex.id}">${ex.name}</button></h3>
+      <p class="blurb">${ex.blurb}</p>
+      <div class="rows">
+        <div class="row"><span class="rl">期間</span><span class="rv">${range(ex)}${daysText(st)}</span></div>
+        <div class="row"><span class="rl">料金</span><span class="rv">${feeText(ex)}${feeStudentNote(ex)}${ex.feeNote?`<em class="note">${ex.feeNote}</em>`:''}</span></div>
+      </div>
+      <div class="label-foot"><span class="tag">${ex.genre}</span>${checked}</div>
+    </div>
+  </article>`;
+}
+
+function currentList(){
+  let list=EXHIBITIONS.slice();
+  if(state.view==='fav') list=list.filter(e=>favs.has(e.id));
+  if(PUBLISH_ONLY_VERIFIED||state.hideSample) list=list.filter(e=>e.dataStatus==='verified');
+  if(state.closingOnly) list=list.filter(e=>status(e).k==='closing');
+  const q=state.q.trim().toLowerCase();
+  if(q) list=list.filter(e=>`${e.name}${e.venue}${e.pref}${e.blurb}`.toLowerCase().includes(q));
+  if(state.region!=='all') list=list.filter(e=>e.region===state.region);
+  if(state.pref!=='all') list=list.filter(e=>e.pref===state.pref);
+  if(state.genre!=='all') list=list.filter(e=>e.genre===state.genre);
+  if(state.date){
+    const t=d(state.date);
+    list=list.filter(e=>t>=d(e.start)&&t<=d(e.end));
+  }else if(state.period!=='all'){
+    list=list.filter(e=>{const k=status(e).k;return state.period==='running'?k==='running'||k==='closing':k===state.period});
+  }
+  const rank=k=>k==='ended'?2:k==='upcoming'?1:0;
+  if(state.sort==='end') list.sort((a,b)=>rank(status(a).k)-rank(status(b).k)||d(a.end)-d(b.end));
+  else if(state.sort==='start') list.sort((a,b)=>d(a.start)-d(b.start));
+  else if(state.sort==='fee') list.sort((a,b)=>((a.feeGeneral??Infinity)-(b.feeGeneral??Infinity))||d(a.start)-d(b.start));
+  return list;
+}
+
+function render(){
+  const list=currentList();
+  grid.innerHTML=list.map(cardHTML).join('');
+  grid.style.display=list.length?'':'none';
+  empty.hidden=list.length>0;
+  if(!list.length){
+    const fav=state.view==='fav';
+    $('#emptyTitle').textContent=fav?'お気に入りはまだありません':'条件に合う展覧会が見つかりませんでした';
+    $('#emptyText').textContent=fav
+      ?'気になる展覧会の「観」の印を押すと、ここに集まります。'
+      :'地域や期間を変えると、観られる展覧会が見つかるかもしれません。';
+    $('#emptyReset').hidden=fav&&!isFiltered();
+  }
+  const dt=state.date
+    ?` — ${d(state.date).toLocaleDateString('ja-JP',{month:'long',day:'numeric'})}に観覧可能`
+    :'';
+  $('#resultCount').textContent=(state.view==='fav'?`お気に入り ${list.length} 件`:`${list.length} 件の展示`)+dt;
+  $('#reset').hidden=!isFiltered();
+  $('#period').disabled=!!state.date;
+  $('#qClear').hidden=!state.q;
+  $('#dateClear').hidden=!state.date;
+  $('#copyFavs').hidden=!(state.view==='fav'&&favs.size>0);
+  const fc=$('#favCount');
+  fc.textContent=favs.size;
+  fc.classList.toggle('has',favs.size>0);
+}
+function isFiltered(){
+  return state.q!==''||state.region!=='all'||state.pref!=='all'||state.genre!=='all'||state.date!==''||state.period!==DEFAULTS.period||state.sort!==DEFAULTS.sort||state.hideSample||state.closingOnly;
+}
+
+/* ============ 詳細モーダル ============ */
+const modal=$('#modal');
+let modalFavId=null;
+function openModal(id){
+  const ex=EXHIBITIONS.find(e=>e.id===id);
+  if(!ex)return;
+  modalFavId=id;
+  const st=status(ex), on=favs.has(id);
+  $('#mThumb').innerHTML=`${art(ex)}
+    <button class="seal${on?' on':''}" data-fav="${ex.id}" aria-pressed="${on}"
+      aria-label="${on?'お気に入りを解除':'お気に入りに登録'}" title="お気に入り"><span>観</span></button>`;
+  $('#mBadges').innerHTML=`<span class="status st-${st.k}">${STATUS_LABEL[st.k]}</span>${dsChip(ex)}${staleChip(ex)}`;
+  $('#mTitle').textContent=ex.name;
+  $('#mVenue').textContent=`${ex.venue}${ex.room?`　${ex.room}`:''}｜${ex.pref}`;
+  $('#mBlurb').textContent=ex.blurb||'';
+  const g=ex.feeGeneral==null?'<span class="unknown">未確認(公式サイトでご確認ください)</span>':ex.feeGeneral===0?'観覧無料':`一般 ¥${ex.feeGeneral.toLocaleString()}`;
+  const s=ex.feeStudent==null?'<span class="unknown">未確認</span>':ex.feeStudent===0?'無料':ex.feeStudent===ex.feeGeneral?'一般と同額':`¥${ex.feeStudent.toLocaleString()}`;
+  const addr=ex.address?ex.address:'<span class="unknown">未確認(公式サイトでご確認ください)</span>';
+  const acc=ex.access?ex.access:'<span class="unknown">未確認(公式サイトでご確認ください)</span>';
+  const lc=ex.lastChecked?`<span class="rv-text">公式サイトを確認 — ${ex.lastChecked.replace(/-/g,'.')}${isStale(ex)?'(要再確認)':''}</span>`:'<span class="unknown">—(サンプルデータ)</span>';
+  $('#mRows').innerHTML=`
+    <div class="row"><span class="rl">会期</span><span class="rv">${range(ex)}${daysText(st)}</span></div>
+    <div class="row"><span class="rl">料金</span><span class="rv">${g}${ex.feeNote?`<em class="note">${ex.feeNote}</em>`:''}</span></div>
+    <div class="row"><span class="rl">大学生</span><span class="rv">${s}</span></div>
+    <div class="row"><span class="rl">住所</span><span class="rv rv-text">${addr}</span></div>
+    <div class="row"><span class="rl">アクセス</span><span class="rv rv-text">${acc}</span></div>
+    <div class="row"><span class="rl">最終確認</span><span class="rv">${lc}</span></div>`;
+  let confirmLine;
+  if(ex.dataStatus!=='verified'){
+    confirmLine='<span class="unknown">サンプルデータのため、確認状況の表示はありません。</span>';
+  }else{
+    const ok=['会期'],ng=[];
+    (ex.feeGeneral!=null?ok:ng).push('一般料金');
+    (ex.feeStudent!=null?ok:ng).push('大学生料金');
+    (ex.address?ok:ng).push('住所');
+    (ex.access?ok:ng).push('アクセス');
+    confirmLine=`公式サイトで確認済み: ${ok.join('・')}`
+      +(ng.length?` <span class="unknown">/ 未確認: ${ng.join('・')}(推測で補完していません)</span>`:'')
+      +` / 確認日 ${ex.lastChecked.replace(/-/g,'.')}`;
+  }
+  $('#mConfirm').innerHTML=confirmLine;
+  $('#mActions').innerHTML=ex.url
+    ?`<a class="btn-official" href="${ex.url}" target="_blank" rel="noopener">公式サイトを見る<span aria-hidden="true">↗</span></a>
+      <span class="official-note">会期・料金は変更される場合があります。来館前に公式サイトで最新情報をご確認ください。</span>`
+    :`<span class="official-note">この展示の公式URLは未登録です(サンプルデータのためリンクはありません)。</span>`;
+  modal.hidden=false;
+  document.body.classList.add('locked');
+  modal.querySelector('.modal-close').focus();
+}
+function closeModal(){
+  modal.hidden=true;
+  modalFavId=null;
+  document.body.classList.remove('locked');
+}
+modal.addEventListener('click',e=>{if(e.target.closest('[data-close]'))closeModal()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!modal.hidden)closeModal()});
+
+/* ============ ページ・ルーティング ============ */
+function pageHTML(slug){
+  const p=PAGES[slug];
+  if(!p)return `<a class="back-home" href="#home">← 展覧会をさがす</a><h2>ページが見つかりません</h2><p>URLをご確認ください。</p>`;
+  return `<a class="back-home" href="#home">← 展覧会をさがす</a><h2>${p.title}</h2>${p.body}`;
+}
+function articlesHTML(){
+  const list=ARTICLES.map(a=>`
+    <a class="article-card" href="#article/${a.slug}">
+      <span class="a-date">${a.date.replace(/-/g,'.')}</span>
+      ${a.tags.map(t=>`<span class="a-tag">${t}</span>`).join(' ')}
+      <h3>${a.title}</h3>
+      <p>${a.lead}</p>
+    </a>`).join('');
+  return `<a class="back-home" href="#home">← 展覧会をさがす</a>
+    <h2>特集・記事</h2>
+    <p>運営者が書く、北関東の美術館めぐりのお役立ち記事です。</p>
+
+    <div class="article-list">${list||'<p>記事の準備中です。</p>'}</div>`;
+}
+function articleHTML(slug){
+  const a=ARTICLES.find(x=>x.slug===slug);
+  if(!a)return `<a class="back-home" href="#home">← 展覧会をさがす</a><h2>記事が見つかりません</h2>`;
+  return `<a class="back-home" href="#home">← 展覧会をさがす</a>
+    <span class="a-date">${a.date.replace(/-/g,'.')}</span>
+    ${a.tags.map(t=>`<span class="a-tag">${t}</span>`).join(' ')}
+    <h2>${a.title}</h2>
+    <p class="article-lead">${a.lead}</p>
+    <div class="article-body">${a.body}</div>
+    <div class="ad-slot">${adSlot('article-bottom')}</div>
+    <a class="back-home" href="#articles">← 特集・記事一覧へ</a>`;
+}
+function showHome(){
+  $('#homeMain').hidden=false;
+  $('#pageView').hidden=true;
+  document.title='観覧帖|展示イベント検索(北関東)';
+  render();
+}
+function showPage(html,title){
+  $('#homeMain').hidden=true;
+  const pv=$('#pageView');
+  pv.hidden=false;
+  pv.innerHTML=html;
+  document.title=(title?title+'|':'')+'観覧帖';
+  window.scrollTo(0,0);
+}
+function route(){
+  const h=location.hash;
+  if(!h||h==='#home'){showHome();return}
+  if(h.startsWith('#article/')){const a=ARTICLES.find(x=>x.slug===h.slice(9));showPage(articleHTML(h.slice(9)),a?a.title:null);return}
+  const slug=h.slice(1);
+  if(slug==='articles'){showPage(articlesHTML(),PAGES.articles.title);return}
+  if(PAGES[slug]){showPage(pageHTML(slug),PAGES[slug].title);return}
+  showHome();
+}
+window.addEventListener('hashchange',route);
+
+/* ============ イベント ============ */
+let tmr;
+$('#q').addEventListener('input',e=>{clearTimeout(tmr);tmr=setTimeout(()=>{state.q=e.target.value;render()},140)});
+$('#qClear').addEventListener('click',()=>{state.q='';$('#q').value='';render();$('#q').focus()});
+$('#region').addEventListener('change',e=>{state.region=e.target.value;render()});
+$('#period').addEventListener('change',e=>{state.period=e.target.value;render()});
+$('#sort').addEventListener('change',e=>{state.sort=e.target.value;render()});
+$('#date').addEventListener('change',e=>{state.date=e.target.value;render()});
+$('#dateClear').addEventListener('click',()=>{state.date='';$('#date').value='';render()});
+$('#hideSample').addEventListener('change',e=>{state.hideSample=e.target.checked;render()});
+$('#closingOnly').addEventListener('click',e=>{
+  state.closingOnly=!state.closingOnly;
+  e.currentTarget.classList.toggle('on',state.closingOnly);
+  e.currentTarget.setAttribute('aria-pressed',state.closingOnly);
+  render();
+});
+$('#reset').addEventListener('click',reset);
+$('#emptyReset').addEventListener('click',reset);
+function reset(){
+  const view=state.view;
+  state={...DEFAULTS,view};
+  $('#q').value='';$('#region').value='all';$('#pref').value='all';$('#period').value='running';
+  $('#date').value='';$('#sort').value='end';
+  $('#hideSample').checked=false;
+  $('#closingOnly').classList.remove('on');
+  $('#closingOnly').setAttribute('aria-pressed','false');
+  document.querySelectorAll('.chip').forEach(c=>c.classList.toggle('on',c.dataset.genre==='all'));
+  render();
+}
+
+/* 都道府県プルダウン(データから自動生成) */
+const prefSel=$('#pref');
+[...new Set(EXHIBITIONS.map(e=>e.pref))].sort((a,b)=>a.localeCompare(b,'ja')).forEach(p=>{
+  const o=document.createElement('option');o.value=p;o.textContent=p;prefSel.appendChild(o);
+});
+prefSel.addEventListener('change',e=>{state.pref=e.target.value;render()});
+
+/* ジャンルチップ */
+const chipsEl=$('#genres');
+['all',...GENRES].forEach(g=>{
+  const b=document.createElement('button');
+  b.className='chip'+(g==='all'?' on':'');
+  b.dataset.genre=g;
+  b.textContent=g==='all'?'すべて':g;
+  b.setAttribute('aria-pressed',g==='all');
+  b.addEventListener('click',()=>{
+    state.genre=g;
+    chipsEl.querySelectorAll('.chip').forEach(c=>{
+      const on=c.dataset.genre===g;
+      c.classList.toggle('on',on);c.setAttribute('aria-pressed',on);
+    });
+    render();
+  });
+  chipsEl.appendChild(b);
+});
+
+/* お気に入り(印)— カードと詳細の両方から押せる(委譲) */
+function toggleFav(btn){
+  const id=btn.dataset.fav;
+  if(favs.has(id))favs.delete(id);else favs.add(id);
+  try{localStorage.setItem(KEY,JSON.stringify([...favs]))}catch(err){}
+  btn.classList.toggle('on',favs.has(id));
+  btn.setAttribute('aria-pressed',favs.has(id));
+  btn.setAttribute('aria-label',favs.has(id)?'お気に入りを解除':'お気に入りに登録');
+  if(!modal.hidden&&modalFavId===id){
+    const mb=modal.querySelector('.seal');
+    if(mb){mb.classList.toggle('on',favs.has(id));mb.setAttribute('aria-pressed',favs.has(id))}
+  }
+  render();
+}
+document.addEventListener('click',e=>{
+  const b=e.target.closest('.seal');
+  if(b)toggleFav(b);
+});
+grid.addEventListener('click',e=>{
+  if(e.target.closest('.seal'))return;
+  const card=e.target.closest('.card');
+  if(card)openModal(card.dataset.id);
+});
+
+/* お気に入りリストのコピー・共有 */
+const copyBtn=$('#copyFavs');
+copyBtn.addEventListener('click',()=>{
+  const favList=EXHIBITIONS.filter(e=>favs.has(e.id));
+  if(!favList.length)return;
+  const lines=['【観覧帖】お気に入りの展覧会','生成日: '+new Date().toLocaleDateString('ja-JP'),''];
+  favList.forEach((e,i)=>{
+    lines.push(`${i+1}. ${e.name}`);
+    lines.push(`   ${e.venue}(${e.pref})`);
+    lines.push(`   会期: ${range(e)} / ${e.feeGeneral==null?'料金未確認':e.feeGeneral===0?'観覧無料':'一般 ¥'+e.feeGeneral.toLocaleString()}`);
+    lines.push(`   公式: ${e.url||'(URL未登録)'}`);
+    lines.push('');
+  });
+  const text=lines.join('\n');
+  const done=()=>{copyBtn.textContent='コピーしました ✓';setTimeout(()=>copyBtn.textContent='お気に入りをコピー',2000)};
+  const fallback=()=>{
+    const ta=document.createElement('textarea');
+    ta.value=text;document.body.appendChild(ta);ta.select();
+    try{document.execCommand('copy');done()}catch(err){window.prompt('コピーできませんでした。以下を手動でコピーしてください:',text)}
+    document.body.removeChild(ta);
+  };
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(done).catch(fallback)}
+  else fallback();
+});
+
+/* タブ */
+document.querySelectorAll('.tab').forEach(t=>{
+  t.addEventListener('click',()=>{
+    const switching=state.view!==t.dataset.view||$('#homeMain').hidden;
+    if(!switching)return;
+    state.view=t.dataset.view;
+    document.querySelectorAll('.tab').forEach(x=>{
+      const on=x===t;
+      x.classList.toggle('on',on);x.setAttribute('aria-pressed',on);
+    });
+    if(location.hash&&location.hash!=='#home'){location.hash='#home'}
+    else{showHome();window.scrollTo({top:0,behavior:'smooth'})}
+  });
+});
+
+/* 初期表示 */
+$('#heroCount').textContent=EXHIBITIONS.filter(e=>['running','closing'].includes(status(e).k)).length;
+route();
+</script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/vce701823e78c4301a35b7e07294d87301792088814092" integrity="sha512-UKNk8GbxkABxKcXYuLkO16EleLGUkcvJWtpSNmExE0Too3ZaFAxTscNWEc1OdAv5/BikHawapSCaiD2XCmp+Bw==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","spa":2}' crossorigin="anonymous"></script>
+</body>
+</html>
